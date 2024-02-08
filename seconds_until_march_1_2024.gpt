@@ -1,0 +1,26 @@
+tools: date, expr
+
+Calculate the number of seconds between now and March 1st, 2024
+
+---
+name: date
+description: Get the current date/time or convert a date/time
+args: format: A format string for the date command
+args: date: An optional date string to convert
+
+#!/bin/bash
+
+if [ -z "${DATE}" ]; then
+  date "+${FORMAT}"
+else
+  date -d "${DATE}" "+${FORMAT}"
+fi
+
+---
+name: expr
+description: Evaluate expressions
+args: expression: The expression to evaluate
+
+#!/bin/bash
+
+expr ${EXPRESSION}

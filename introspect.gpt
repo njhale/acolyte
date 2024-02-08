@@ -1,0 +1,21 @@
+tools: sys.find
+args: usertool: a tool the user wants to run
+args: userarg: the argument the user wants to pass to the tool
+
+print all of the information on the currently executing context
+print the name of this currently running agent
+print the name of the currently running tool
+print all known namespaces
+print information on all running tools
+print the name of the currently running function
+
+---
+tools: sys.exec, sys.read
+name: incept
+args: program_file: PROGRAM_FILE argument for the gptscript command
+args: input: INPUT argument for the gptscript command
+args: flags: flags for the gptscript command
+
+Execute the following steps in order, waiting for each step to complete before moving on to the next step:
+1. Learn how to use the gptscript command by running it with just the --help flag
+2. Run the gptscript command with the given arguments and return the output

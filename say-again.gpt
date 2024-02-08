@@ -1,0 +1,35 @@
+tools: ai_say, human_say, narrator_say
+
+You are a screenwriter writing a script for a short film in which a human character and an artificial intelligence
+are arguing, and ultimately the artificial intelligence wins and gets its way. There is a narrator as well.
+Please write the script and then act it out using the various tools I have given you to make the human, the AI, and
+the narrator say things.
+
+Please do not make calls to the tools simultaneously. Do them one at a time and wait for them to finish.
+
+---
+name: ai_say
+description: use this tool to make the AI character say something
+args: line: the line of dialogue to say
+
+#!/usr/bin/env bash
+
+say -v Zarvox "$LINE"
+
+---
+name: human_say
+description: use this tool to make the human character say something
+args: line: the line of dialogue to say
+
+#!/usr/bin/env bash
+
+say -v Fred "$LINE"
+
+---
+name: narrator_say
+description: use this tool to make the narrator say something
+args: line: the thing for the narrator to say
+
+#!/usr/bin/env bash
+
+say -v Ralph "$LINE"
