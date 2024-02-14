@@ -1,0 +1,76 @@
+Tools: fluent-languages, detect-language, translate-sentence, levenschtein-distance, sys.Abort
+
+Use the translate-sentence tool to translate sentences to different languages.
+
+For every language "target-language" that the model is fluent in, except english, perform the following steps sequentially where "sentence" = "The quick brown fox jumps over the lazy dog":
+1. Detect the language of {sentence} to get {original-language}
+1. Translate the given {sentence} to {target-language} to get {translation}
+2. Translate {translation} to {original-language} to get {roundtrip-translation}
+3. Print a yaml object containing {sentence}, {original-language}, {target-language}, {translation}, {roundtrip-translation}, and {levenschtein-distance(sentence, roundtrip-translation)} followed by '---'
+
+If you receive any responses from tools that you use that begin with "error: ", immediately print the error message and abort
+
+---
+Name: translate-sentence
+Description: translates the given sentence to the given language
+Tools: detect-language
+Args: sentence: sentence to translate
+Args: to-language: language to translate to
+
+Using the detect-language tool, detect the language of the given sentence, then translate it to to-language and without using any tools and return the result.
+If sentence is to-language, return sentence without translating it.
+If you fail to detect or translate sentence, return an error message describing the issue that starts with "error:"
+
+
+---
+Name: detect-language
+Description: detects and returns the name of the language a given sentence is written in
+Args: sentence: sentence to detect the language of
+
+Determine the language the given sentence is written in, then return the lower-case name of that language.
+If you can't determine the language, return "error: failed to detect language".
+
+---
+Name: fluent-languages
+Description: returns the list of languages the model is fluent in
+
+Return a list containing the lower-case names of languages the model this tool is using can understand, read, and write.
+
+---
+Name: levenschtein-distance
+Description: returns the levenschtein distance between two strings
+Args: before: first string
+Args: after: second string
+
+#!python3
+
+import os
+
+def levenshtein_distance(s1, s2):
+    # Create a matrix to store the distances
+    rows = len(s1) + 1
+    cols = len(s2) + 1
+    distance = [[0 for _ in range(cols)] for _ in range(rows)]
+
+    # Initialize the first row and column
+    for i in range(1, rows):
+        distance[i][0] = i
+    for j in range(1, cols):
+        distance[0][j] = j
+
+    # Fill in the rest of the matrix
+    for col in range(1, cols):
+        for row in range(1, rows):
+            if s1[row - 1] == s2[col - 1]:
+                cost = 0
+            else:
+                cost = 1
+
+            distance[row][col] = min(distance[row - 1][col] + 1,  # deletion
+                                      distance[row][col - 1] + 1,  # insertion
+                                      distance[row - 1][col - 1] + cost)  # substitution
+
+    # Return the bottom-right corner of the matrix
+    return distance[-1][-1]
+
+print(levenshtein_distance(os.environ.get("before"), os.environ.get("after")))
